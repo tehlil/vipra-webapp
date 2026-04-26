@@ -14,7 +14,10 @@ model User {
   email                  String   @unique
   password               String // Encrypted password (optional for now)
   role                   String   @default("user") // user, admin
+  first_name             String?
+  last_name              String?
   profile_pic            String? // URL of the profile picture (primary/display picture)
+  profile_photo          String? // Alias for profile_pic used in some parts of the app
   profile_images         String? // JSON array of additional profile image URLs
   gotra                  String?
   current_practiced_gotra String?
@@ -72,6 +75,10 @@ model User {
   payment_id             String? // Payment/transaction ID
   status                 String   @default("pending") // pending, approved, rejected
   payment_status         Boolean  @default(false)
+  is_premium             Boolean  @default(false)
+  premium_plan           String?  // gold, silver, etc.
+  is_verified            Boolean  @default(false)
+  profile_completed      Boolean  @default(false)
   is_approved            Boolean  @default(false) // User has been approved by admin
   approval_status        String   @default("pending") // pending, approved, rejected
   approval_notes         String? // Admin notes for rejection

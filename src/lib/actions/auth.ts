@@ -125,3 +125,8 @@ export async function getUserProfile() {
 
   return data;
 }
+
+export async function isAdmin() {
+  const profile = await getUserProfile();
+  return profile?.role === 'admin';
+}

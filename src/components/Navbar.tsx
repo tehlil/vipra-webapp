@@ -83,7 +83,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center justify-end gap-2 lg:gap-3 flex-1 ml-8">
+          <div className="hidden sm:flex desktop-nav-container items-center justify-end gap-2 lg:gap-3 flex-1 ml-8">
             {!user ? (
               <>
                 <Link href="/browse">
@@ -160,7 +160,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="sm:hidden flex mobile-nav-container items-center gap-2">
             {user && (
               <>
                 <Link href="/connections">
@@ -186,7 +186,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-2">
+          <div className="sm:hidden pb-4 space-y-2">
             {!user ? (
               <>
                 <Link href="/browse" onClick={() => setIsOpen(false)}>

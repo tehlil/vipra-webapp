@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getUser } from '@/lib/auth-server';
+import { getUser, getUserProfile } from '@/lib/auth-server';
 import AdminClient from '@/components/admin/AdminClient';
 
 export default async function AdminPage() {
@@ -7,6 +7,11 @@ export default async function AdminPage() {
   
   if (!user) {
     redirect('/login');
+  }
+
+  const profile = await getUserProfile();
+  if (profile?.role !== 'admin') {
+    redirect('/dashboard');
   }
 
   return (

@@ -14,6 +14,7 @@ import { Users, FileText, DollarSign, AlertCircle, Activity, TrendingUp, Plus, T
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { verifyUser, makeUserPremium, getAdminStats } from '@/lib/actions/admin';
 
 interface AdminClientProps {
   userId: string;
@@ -49,7 +50,11 @@ export default function AdminClient({ userId }: AdminClientProps) {
     try {
       setLoading(true);
 
-      // Fetch users data
+      // Fetch stats using server action
+      const statsData = await getAdminStats();
+      setStats(statsData);
+
+      // Fetch users data (still using client for now but restricted to 20)
       const { data: usersData, error: usersError } = await supabase
         .from('users')
         .select('id, email, first_name, last_name, gender, is_verified, is_premium, created_at')
@@ -61,19 +66,6 @@ export default function AdminClient({ userId }: AdminClientProps) {
         toast.error('Failed to load users data');
       } else {
         setUsers(usersData || []);
-
-        // Calculate stats
-        const totalUsers = usersData?.length || 0;
-        const verifiedProfiles = usersData?.filter((u) => u.is_verified).length || 0;
-        const premiumMembers = usersData?.filter((u) => u.is_premium).length || 0;
-        const activeToday = Math.floor(totalUsers * 0.6); // Estimate
-
-        setStats({
-          totalUsers,
-          verifiedProfiles,
-          premiumMembers,
-          activeToday,
-        });
       }
     } catch (error) {
       console.error('[v0] Admin data fetch error:', error);
@@ -85,13 +77,10 @@ export default function AdminClient({ userId }: AdminClientProps) {
 
   const handleVerifyUser = async (userId: string) => {
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_verified: true })
-        .eq('id', userId);
+      const result = await verifyUser(userId);
 
-      if (error) {
-        toast.error('Failed to verify user');
+      if (result.error) {
+        toast.error(result.error);
       } else {
         toast.success('User verified successfully');
         fetchAdminData();
@@ -103,13 +92,10 @@ export default function AdminClient({ userId }: AdminClientProps) {
 
   const handleMakePremium = async (userId: string) => {
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_premium: true, premium_plan: 'gold' })
-        .eq('id', userId);
+      const result = await makeUserPremium(userId);
 
-      if (error) {
-        toast.error('Failed to make user premium');
+      if (result.error) {
+        toast.error(result.error);
       } else {
         toast.success('User made premium successfully');
         fetchAdminData();
