@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Phone, Heart, CheckCircle, MessageCircle, User, ExternalLink, Image as ImageIcon } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import Image from 'next/image'
 import Link from 'next/link'
 
