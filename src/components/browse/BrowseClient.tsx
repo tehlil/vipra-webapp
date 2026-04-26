@@ -42,6 +42,7 @@ export default function BrowseClient() {
           id,
           first_name,
           last_name,
+          gender,
           date_of_birth,
           profile_image_url,
           profiles!inner (
@@ -70,6 +71,7 @@ export default function BrowseClient() {
         id: user.id,
         first_name: user.first_name,
         last_name: user.last_name,
+        gender: user.gender,
         date_of_birth: user.date_of_birth,
         location_city: user.profiles?.[0]?.location_city || '',
         profile_image_url: user.profile_image_url,

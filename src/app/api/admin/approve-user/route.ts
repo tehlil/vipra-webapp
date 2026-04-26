@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { sendApprovalEmail, sendRejectionEmail } from '@/lib/email-service';
+import { sendApprovalEmail } from '@/lib/email-service';
 
 export async function GET(request: NextRequest) {
   try {
@@ -99,9 +99,9 @@ export async function POST(request: NextRequest) {
 
     // Send email notification
     if (status === 'approved') {
-      await sendApprovalEmail(user.email, user.first_name);
+      await sendApprovalEmail(user.email, user.first_name, 'approved');
     } else if (status === 'rejected') {
-      await sendRejectionEmail(user.email, user.first_name, notes || '');
+      await sendApprovalEmail(user.email, user.first_name, 'rejected', notes || '');
     }
 
     return NextResponse.json(

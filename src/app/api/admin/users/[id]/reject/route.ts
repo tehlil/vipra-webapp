@@ -3,8 +3,9 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const body = await request.json();
     const { notes = 'Rejected by admin' } = body;
@@ -39,7 +40,7 @@ export async function PATCH(
         approved_by: adminUser.id,
         approval_notes: notes,
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -50,7 +51,7 @@ export async function PATCH(
     // Log rejection
     await supabase.from('approval_logs').insert([
       {
-        user_id: params.id,
+        user_id: id,
         admin_id: adminUser.id,
         status: 'rejected',
         notes: notes,

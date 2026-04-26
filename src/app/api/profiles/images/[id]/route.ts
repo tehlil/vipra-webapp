@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,7 +15,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('profile_images')
       .delete()
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (error) throw error;
 
@@ -30,8 +31,9 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,7 +44,7 @@ export async function PATCH(
     const { data: image, error: imageError } = await supabase
       .from('profile_images')
       .select('user_id')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (imageError || !image) {
@@ -61,7 +63,7 @@ export async function PATCH(
     const { error: setPrimaryError } = await supabase
       .from('profile_images')
       .update({ is_primary: true })
-      .eq('id', params.id);
+      .eq('id', id);
 
     if (setPrimaryError) throw setPrimaryError;
 

@@ -3,8 +3,9 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const supabase = await createClient();
 
@@ -36,7 +37,7 @@ export async function PATCH(
         approved_by: adminUser.id,
         approved_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single();
 
@@ -47,7 +48,7 @@ export async function PATCH(
     // Log approval
     await supabase.from('approval_logs').insert([
       {
-        user_id: params.id,
+        user_id: id,
         admin_id: adminUser.id,
         status: 'approved',
         notes: 'Approved by admin',
